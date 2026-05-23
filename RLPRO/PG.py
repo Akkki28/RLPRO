@@ -2,7 +2,7 @@
 import torch
 from visualize import plot_total_rewards
 
-def PG(policy, optim, n_episodes, env):
+def PG(policy, optim, env, n_episodes=100, naive=False, gamma=0.99):
     print("Algorithm: POLICY GRADIENTS")
     total_rewards_per_episode = []
     for i in range(n_episodes):
@@ -11,6 +11,7 @@ def PG(policy, optim, n_episodes, env):
         rewards = []
         log_probs = []
         actions = []
+        
         
         while terminated is False:
             s_tensor = torch.from_numpy(s)
@@ -22,12 +23,19 @@ def PG(policy, optim, n_episodes, env):
             log_probs.append(log_prob)
             actions.append(a)
         
-        returns = []
-        sumi = 0
-        for reward in reversed(rewards):
-            sumi = sumi + reward
-            returns.append(sumi)
         
+        returns = []
+        if naive:
+            for reward in rewards:
+                returns.appen(sum(rewards))
+        
+        else:
+            for t in range(len(rewards)):
+                G = 0.0
+                for k, r in enumerate(rewards[t:]):
+                    G += (gamma ** k) * r
+                    returns.append(G)
+            
         loss = 0
         for log_prob, reward in zip(log_probs, returns):
             loss += -log_prob * reward
