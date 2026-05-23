@@ -2,7 +2,7 @@ import torch.nn as nn
 import torch.optim as optim
 
 class PolicyNetwork(nn.Module):
-    def __init__(self):
+    def __init__(self,input_len,output_len):
         super().__init__()
         self.input = nn.Linear(in_features=input_len,out_features=64)
         self.relu = nn.ReLU()

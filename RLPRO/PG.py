@@ -6,7 +6,7 @@ def PG(policy, optim, n_episodes, env):
     print("Algorithm: POLICY GRADIENTS")
     total_rewards_per_episode = []
     for i in range(n_episodes):
-        s = env.reset[0]
+        s = env.reset()[0]
         terminated = False
         rewards = []
         log_probs = []
@@ -15,22 +15,22 @@ def PG(policy, optim, n_episodes, env):
         while terminated is False:
             s_tensor = torch.from_numpy(s)
             action_dist = policy.forward(s_tensor)
-            a = torch.distibutions.Categorical(action_dist).sample()
+            a = torch.distributions.Categorical(action_dist).sample()
             log_prob = torch.distributions.Categorical(action_dist).log_prob(a)
             s, r, terminated, truncated, info = env.step(a.item())
             rewards.append(r)
             log_probs.append(log_prob)
-            actions.appen(a)
+            actions.append(a)
         
         returns = []
-        sum = 0
+        sumi = 0
         for reward in reversed(rewards):
-            sum = sum + reward
-            returns.append(sum)
+            sumi = sumi + reward
+            returns.append(sumi)
         
         loss = 0
         for log_prob, reward in zip(log_probs, returns):
-            loss += -log_prob * rewards
+            loss += -log_prob * reward
         loss = loss / len(rewards)
         optim.zero_grad()
         loss.backward()
