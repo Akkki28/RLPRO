@@ -8,13 +8,14 @@ def PG(policy, optim, n_episodes, env, naive=False, gamma=0.99, avg_b=False, opt
     for i in range(n_episodes):
         s = env.reset()[0]
         terminated = False
+        truncated = False
         rewards = []
         log_probs = []
         actions = []
         avg_r = 0
         cnt = 0
         
-        while terminated is False:
+        while terminated is False and truncated is False:
             s_tensor = torch.from_numpy(s)
             action_dist = policy.forward(s_tensor)
             a = torch.distributions.Categorical(action_dist).sample()
@@ -25,6 +26,9 @@ def PG(policy, optim, n_episodes, env, naive=False, gamma=0.99, avg_b=False, opt
             rewards.append(r)
             log_probs.append(log_prob)
             actions.append(a)
+        
+        if i % 10 == 0:
+            print(f"Episode:{i} Reward:{sum(rewards)}")
         
         returns = []
         if naive:

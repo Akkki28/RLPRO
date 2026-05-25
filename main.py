@@ -10,6 +10,6 @@ output_len = env.action_space.n
 
 policy = PolicyNetwork(input_len,output_len)
 optimizer = optim.Adam(policy.parameters(), lr=1e-3)
-num_episodes = 100
+num_episodes = 500
 
-PG(policy,optimizer,num_episodes,env)
+PG(policy,optimizer,num_episodes,env,avg_b=True)
